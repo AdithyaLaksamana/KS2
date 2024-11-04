@@ -1,38 +1,114 @@
-.App {
-  text-align: center;
+* {
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+html, body {
+  height: 100%;
+  margin: 0;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.app {
   display: flex;
+  flex-wrap: wrap;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  padding-bottom: 200px;
+  min-width: 1200px;
+  height: 100%;
+}
+
+.header {
+  background: linear-gradient(159deg, rgba(0,71,171,1) 0%, rgba(28,169,201,1) 100%);
   color: white;
+  text-align: center;
+  padding: 15px;
+  position: fixed;
+  width: 100%;
+  height: 80px;
+  min-width: 1200px;
 }
 
-.App-link {
-  color: #61dafb;
+.footer {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  background-color: #f0e6e6;
+  outline: 1px solid #aaaaaa;
+  border-radius: 30px;
+  height: 300px;
+  position: fixed;
+  bottom: -200px;
+  width: 100%;
+  min-width: 1200px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.footer a{
+  text-decoration: none;
 }
+
+footer button {
+  background-color: white;
+  color: white;
+  border-radius: 50%;
+  font-size: 16px;
+  cursor: pointer;
+  width: 75px;
+  height: 75px;
+  margin-bottom: 210px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding-bottom: 15px;
+}
+
+footer button:hover {
+  background-color: #ddd;
+}
+
+.produk-button {
+  background-color: #28a745;
+}
+
+.grup-button {
+  background-color: #28a745;
+}
+
+.scan-button {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 100px;
+  background-color: #007bff;
+  outline: 1px solid #aaaaaa;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  bottom: 40px;
+}
+
+.scan-button:hover {
+  background-color: #0056b3;
+}
+
+.laporan-button {
+  background-color: #28a745;
+}
+
+.info-button {
+  background-color: #28a745;
+}
+
+/* .invisible-button {
+  background-color:#28a745;
+}
+
+.invisible-button:hover {
+  background-color: #f0e6e6;
+} */

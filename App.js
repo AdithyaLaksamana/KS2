@@ -15,7 +15,7 @@ function App() {
   return (
     <Router>
       <div className="app">
-        <Head />
+        {/* <Head /> */}
         <Routes>
           <Route path="/" element={<Produk />} />
           <Route path="/grup" element={<Grup />} />

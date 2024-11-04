@@ -1,0 +1,69 @@
+.scanner-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  margin-top:  160px;
+}
+
+.scanner-overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.scanner-frame {
+  position: relative;
+  width: 50%;
+  aspect-ratio: 2;
+  border: 2px solid white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.webcam {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.scanner-line {
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  height: 2px;
+  background-color: white;
+}
+
+.scan-text {
+  position: absolute;
+  bottom: 70px;
+  font-size: 24px;
+  z-index: 1;
+  color: black; 
+}
+
+.cancel-button {
+  position: absolute;
+  bottom: 20px;
+  background-color: #f0f0f0;
+  color: black;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+}
