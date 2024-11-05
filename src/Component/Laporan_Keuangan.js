@@ -8,9 +8,9 @@ const Data = [
     { date: "12 Mei 2021 08:35", name: "AQUA", description: "Air Mineral, Botol 600 ml", amount: 5, price: 100000 },
 ];
 
+const totalHarga = Data.reduce((total, item) => total + (item.price * item.amount), 0);
 function Laporan_Keuangan() {
     return (
-      
         <div className="Laporan">
             <div className="KeuanganButton">
                 <Link to= "/grafik"><button className="grafik-button">Grafik</button></Link>
@@ -26,13 +26,16 @@ function Laporan_Keuangan() {
                 </div>
                 {Data.map((item, index) => (
                     <div className="LaporanItem" key={index}>
-                    <p>{item.date}</p>
-                    <p><strong>{item.name}</strong><br />{item.description}</p>
-                    <p>{item.amount}</p>
-                    <p>Rp {item.price.toLocaleString("id-ID")},00</p>
-                    <p>Rp {(item.price * item.amount).toLocaleString("id-ID")},00</p>
-                </div>
+                        <p>{item.date}</p>
+                        <p><strong>{item.name}</strong><br />{item.description}</p>
+                        <p>{item.amount}</p>
+                        <p>Rp {item.price.toLocaleString("id-ID")},00</p>
+                        <p>Rp {(item.price * item.amount).toLocaleString("id-ID")},00</p>
+                    </div>
                 ))}
+                <div className="LaporanFooter">
+                    <p>TOTAL: Rp {totalHarga.toLocaleString("id-ID")},00</p>
+                </div>
             </div>
         </div>
     );  
