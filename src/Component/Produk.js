@@ -11,7 +11,6 @@ const products = [
     { name: "SUNLIGHT", description: "Sabun Cuci Piring", stock: 26, image: "/assets/images/aqua.png" },
     { name: "Gulaku", description: "Gula Pasir", stock: 21, image: "/assets/images/aqua.png", grup: "Gula" },
     { name: "VIT", description: "Air Mineral Botol", stock: 20, image: "/assets/images/aqua.png" },
-    
 ];
 
 function Produk() {
