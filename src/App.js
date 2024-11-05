@@ -10,8 +10,8 @@ import Laporan from "./Component/Laporan_Grafik";
 import Info from "./Component/Info";
 import Kategori from './Component/Kategori';
 import Scanner from './Component/Scanner';
-import Laporan_Grafik from './Component/Laporan_Grafik';
-import Laporan_Keuangan from './Component/Laporan_Keuangan';
+import LaporanGrafik from './Component/Laporan_Grafik';
+import LaporanKeuangan from './Component/Laporan_Keuangan';
 
 function App() {
   return (
@@ -25,8 +25,8 @@ function App() {
           <Route path="/info" element={<Info />} />
           <Route path="/grup/:groupName" element={<Kategori />} />
           <Route path="/scanner" element={<Scanner />} />
-          <Route path="/grafik" element={<Laporan_Grafik />} />
-          <Route path="/keuangan" element={<Laporan_Keuangan />} />
+          <Route path="/grafik" element={<LaporanGrafik />} />
+          <Route path="/keuangan" element={<LaporanKeuangan />} />
         </Routes>
         <Footer />
       </div>
@@ -35,20 +35,3 @@ function App() {
 }
 
 export default App;
-
-
-// import './App.css';
-// import {BrowserRouter as Router,Route,Routes} from "react-router-dom";
-// import Barscan from './Component/Scanner'
-
-// function App() {
-//   return (
-//         <Router>
-//           <Routes>
-//             <Route path="/barcode_scanner" element={<Barscan />} />
-//           </Routes>
-//         </Router>
-//   );
-// }
-
-// export default App;
