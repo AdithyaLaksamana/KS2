@@ -34,7 +34,8 @@ function Laporan_Keuangan() {
                     </div>
                 ))}
                 <div className="LaporanFooter">
-                    <p>TOTAL: Rp {totalHarga.toLocaleString("id-ID")},00</p>
+                    <p>TOTAL :</p>
+                    <p>Rp {totalHarga.toLocaleString("id-ID")},00</p>
                 </div>
             </div>
         </div>

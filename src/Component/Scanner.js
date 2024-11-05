@@ -51,3 +51,27 @@ const Scanner = () => {
 };
 
 export default Scanner;
+
+// import React, { useState } from 'react';
+
+// const BarcodeInput = () => {
+//   const [barcode, setBarcode] = useState('');
+
+//   const handleInput = (e) => {
+//     setBarcode(e.target.value);
+//   };
+
+//   return (
+//     <div>
+//       <input
+//         type="text"
+//         value={barcode}
+//         onChange={handleInput}
+//         placeholder="Scan barcode here..."
+//       />
+//       {barcode && <p>Barcode: {barcode}</p>}
+//     </div>
+//   );
+// };
+
+// export default BarcodeInput;
