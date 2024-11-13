@@ -1,6 +1,5 @@
 import React from "react";
-import "./Laporan.css";
-import { Link } from "react-router-dom";
+import "../Styles/Laporan.css";
 import { Line } from "react-chartjs-2";
 import { Chart as ChartJS, LineElement, CategoryScale, LinearScale, PointElement, Tooltip, Legend, Filler } from "chart.js";
 ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Tooltip, Legend, Filler);
@@ -43,12 +42,7 @@ const options = {
 
 function Laporan_Grafik() {
   return (
-    
     <div className="Laporan">
-      <div className="GrafikButton">
-        <button className="grafik-button">Grafik</button>
-        <Link to="/keuangan"><button className="keuangan-button">Keuangan</button></Link>
-      </div>
       <div className="stokMasuk">
         <h2>Stok Masuk</h2>
         <Line data={data} options={options} />

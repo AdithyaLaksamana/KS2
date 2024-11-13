@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import Webcam from 'react-webcam';
 import { BrowserMultiFormatReader } from '@zxing/browser';
-import './Scanner.css';
+import '../Styles/Scanner.css';
 
 const Scanner = () => {
   const webcamRef = useRef(null);

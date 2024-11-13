@@ -12,6 +12,7 @@
     padding: 30px;
     border-bottom: 3px solid #766868;
     width: 80%;
+    text-transform: uppercase;
 }
 
 .info-list {

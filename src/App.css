@@ -1,3 +1,4 @@
+
 * {
   padding: 0;
   box-sizing: border-box;
@@ -6,6 +7,7 @@
 html, body {
   height: 100%;
   margin: 0;
+  overflow: auto;
 }
 
 body {
@@ -15,100 +17,188 @@ body {
 
 .app {
   display: flex;
-  flex-wrap: wrap;
-  flex-direction: column;
+  justify-content: center;
   padding-bottom: 200px;
-  min-width: 1200px;
+  min-width: 1100px;
   height: 100%;
+  background-color: #dfd6d6;
+  min-height: 600px;
 }
 
 .header {
   background: linear-gradient(159deg, rgba(0,71,171,1) 0%, rgba(28,169,201,1) 100%);
   color: white;
   text-align: center;
-  padding: 15px;
   position: fixed;
   width: 100%;
   height: 80px;
-  min-width: 1200px;
+  z-index: 10;
 }
 
 .footer {
   display: flex;
-  justify-content: space-around;
-  align-items: flex-end;
-  background-color: #f0e6e6;
-  outline: 1px solid #aaaaaa;
-  border-radius: 30px;
-  height: 300px;
+  justify-content: center;
+  align-items: center;
   position: fixed;
-  bottom: -200px;
+  bottom: -30px;
   width: 100%;
-  min-width: 1200px;
 }
 
-.footer a{
-  text-decoration: none;
-}
-
-footer button {
-  width: 75px;
-  height: 75px;
-  background-color: white;
-  display: flex;
-  justify-content: center;
-  margin-bottom: 210px;
-  color: white;
-  border-radius: 50%;
-  font-size: 16px;
-  cursor: pointer;
-  align-items: flex-end;
-  padding-bottom: 15px;
-}
-
-footer button:hover {
-  background-color: #ddd;
-}
-
-.produk-button {
-  background-color: #28a745;
-}
-
-.grup-button {
-  background-color: #28a745;
-}
-
-.scan-button {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100px;
+.navigation {
+  position: relative;
+  width: 100%;
   height: 100px;
-  background-color: #007bff;
+  background-color: #f0e6e6;
   outline: 1px solid #aaaaaa;
-  font-size: 16px;
   display: flex;
   justify-content: center;
-  align-items: flex-end;
-  bottom: 40px;
+  align-items: center;
+  border-radius: 10px;
 }
 
-.scan-button:hover {
-  background-color: #0056b3;
+.wrapper {
+  display: flex;
+  width: 100%;
+  margin-bottom: 30px;
+  justify-content: space-evenly;
 }
 
-.laporan-button {
-  background-color: #28a745;
+.list {
+  position: relative;
+  width: 70px;
+  height: 70px;
+  list-style: none;
+  z-index: 1;
 }
 
-.info-button {
-  background-color: #28a745;
+.list .link-button {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  text-align: center;
+  font-weight: 500;
+  background: none;
+  border: none;
+  cursor: pointer;
 }
 
-/* .invisible-button {
-  background-color:#28a745;
+.list .icon {
+  position: relative;
+  display: block;
+  line-height: 75px;
+  font-size: 20px;
+  text-align: center;
+  color: #000;
+  transition: 0.5s;
 }
 
-.invisible-button:hover {
-  background-color: #f0e6e6;
-} */
+.list .link-button:hover .icon {
+  color: #aaaaaa;
+}
+
+.icon.active-icon {
+  color: #0000ff;
+}
+
+.list.active .icon {
+  transform: translateY(-35px);
+  font-size: 28px;
+}
+
+.list .text {
+  position: absolute;
+  color: #000;
+  font-weight: 400;
+  font-size: 10px;
+  letter-spacing: 0,5px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: 0.5s;
+}
+
+.list .link-button:hover .text {
+  color: #aaaaaa;
+  opacity: 1;
+}
+
+.list.active .text {
+  opacity: 1;
+  transform: translateY(10px);
+  font-weight: bold;
+  font-size: 12px;
+  letter-spacing: 2px;
+}
+
+.list .circle {
+  position: absolute;
+  display: block;
+  width: 50px;
+  height: 50px;
+  background: transparent;
+  border-radius: 50%;
+  border: 1.8px solid #000;
+  transform: translateY(-37px) scale(0);
+}
+
+.list.active .circle {
+  transition: 0.5s;
+  transition-delay: 0.3s;
+  transform: translateY(-37px) scale(1);
+}
+
+.indicator {
+  position: absolute;
+  top: -35px;
+  width: 70px;
+  height: 70px;
+  background: linear-gradient(0deg, #eee, #aaaaaa);
+  border: 6px solid #06021b;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.5s;
+  transform: translateX(0);
+}
+
+.indicator::before,
+.indicator::after {
+  content: '';
+  position: absolute;
+  width: 25px;
+  height: 20px;
+  background: transparent;
+  top: 50%;
+}
+
+.indicator::before {
+  left: -25px;
+  border-top-right-radius: 20px;
+  box-shadow: 1px -5px 0 #06021b;
+}
+
+.indicator::after {
+  right: -25px;
+  border-top-left-radius: 20px;
+  box-shadow: -1px -5px 0 #06021b;
+}
+
+
+@media (max-width: 1200px){
+  .header{
+    height: 60px;
+  }
+
+  .app{
+    min-width: auto;
+  }
+
+  .footer{
+    min-width: auto;
+    bottom: -30px;
+  }
+}
+

@@ -1,0 +1,64 @@
+.container{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.button{
+    display: flex;
+    width: 260px;
+    height: 60px;
+    align-items: center;
+    position: relative;
+    margin-top: 100px;
+    border-radius: 60px;
+    background-color: #d9d9d9;
+    cursor: pointer;
+    border: 2px solid #00000056;
+}
+
+.button::before, .button::after{
+    display: flex;
+    position: absolute;
+    width: 130px;
+    height: 52px;
+    margin: 1px;
+    border-radius: 45px;
+    background-color: #aaaaaa;
+    border: 1px solid #00000056;
+    justify-content: center;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    transition: 0.5s ease;
+}
+
+
+.button::before {
+    content: 'Grafik';
+    opacity: 1;
+}
+
+.button::after {
+    content: 'Keuangan';
+    opacity: 0;
+}
+
+input:checked + .button::before{
+    content: 'Grafik';
+    transform: translateX(122px) ;
+    opacity: 0;
+}
+
+input:checked + .button::after {
+    content: 'Keuangan';
+    transform: translateX(122px) ;
+    opacity: 1;
+}
+
+.container input{
+    display: none;
+}

@@ -1,5 +1,5 @@
 import React from "react";
-import "./Info.css";
+import "../Styles/Info.css";
 
 const products = [
   { name: "AQUA", description: "Air Mineral Botol 600ml", stock: 30, image: "/assets/images/aqua.png" },
@@ -16,7 +16,7 @@ const products = [
 function Info() {
   return (
     <div className="info">
-      <h1>DAFTAR BARANG</h1>
+      <h1>daftar barang</h1>
       <div className="info-list">
         {products.sort((a, b) => a.stock - b.stock).map((product, index) => (
           product.stock < 15 && (

@@ -3,7 +3,7 @@
     flex-direction: column;
     align-items: center;
     width: 100%;
-    margin-top: 110px;
+    margin: 40px;
 }
 
 .GrafikButton, .KeuanganButton{
@@ -23,7 +23,6 @@
     font-size: 16px;
     cursor: pointer;
     border-radius: 15px;
-    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .GrafikButton .grafik-button {
@@ -73,26 +72,30 @@
     box-shadow: 10px 10px 3px rgba(0, 0, 0, 0.1);
   }
 
-  .Keuangan{
+.Keuangan{
     display: flex;
     flex-direction: column;
     align-items: center;
-    box-shadow: 10px 10px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 10px 0px 3px rgba(0, 0, 0, 0.1);
     background-color: #f8f8f8;
-  }
+}
 
-  .LaporanHeader, .LaporanItem, .LaporanFooter {
+.LaporanHeader, .LaporanItem, .LaporanFooter {
     width: 100%;
     text-align: center;
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    padding: 20px;
+    padding: 20px 0;
     align-items: center;
     border: 1px solid #d9d9d9;
+    font-size: 20px;
+}
+
+.LaporanItem Strong {
+    text-decoration: underline;
 }
 
 .LaporanFooter {
-    padding: 10px;
     font-weight: bold;
     border: 2px solid #d9d9d9;
 }

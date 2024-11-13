@@ -1,0 +1,102 @@
+.Add {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 100px;
+    width: 100%;
+}
+
+.Container {
+    width: 50%;
+    background-color: #edf2f7;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* background-color: #4a5568; */
+    display: flex;
+    justify-content: center;
+}
+
+.content{
+    width: 90%;
+    padding: 40px 0;
+}
+
+
+.input-produk, .input-grup {
+    margin-bottom: 20px;
+    
+}
+.Barcode {
+    display: flex;
+    align-items: center;
+    /* border-bottom: 1px solid #cbd5e0; */
+}
+
+.label {
+    display: block;
+    color: #4a5568;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.input-field {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #cbd5e0;
+    padding: 10px;
+    background: transparent;
+    color: #4a5568;
+}
+
+
+.addImage {
+    display: flex;
+    width: 30%;
+    align-items: end;
+    justify-content: center;
+    border: 1px solid #cbd5e0;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    gap: 20px;
+    font-size: 20px;
+}
+
+.uploaded-image{
+    max-width: 100px;
+    max-height: 100px;
+    border-radius: 20px;
+}
+
+
+.uploaded-image.no-radius {
+    border-radius: 0;
+}
+
+.openFile {
+    color: #6b7280;
+    cursor: pointer;
+    font-size: 20px;
+    min-width: 20px;
+}
+
+.cancelButton, .saveButton{
+    padding: 15px;
+    background-color: #e2e8f0;
+    color: #4a5568;
+    font-weight: bold;
+    border: 2px solid #cbd5e0;
+    
+}
+
+
+.cancelButton {
+    width: 50%;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+}
+
+.saveButton{
+    width: 50%;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+}

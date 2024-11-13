@@ -1,6 +1,5 @@
 import React from "react";
-import "./Laporan.css";
-import { Link } from "react-router-dom";
+import "../Styles/Laporan.css";
 
 const Data = [
     { date: "14 Mei 2021 08:35", name: "AQUA", description: "Air Mineral, Botol 600 ml", amount: 3, price: 300000 },
@@ -12,10 +11,6 @@ const totalHarga = Data.reduce((total, item) => total + (item.price * item.amoun
 function Laporan_Keuangan() {
     return (
         <div className="Laporan">
-            <div className="KeuanganButton">
-                <Link to= "/grafik"><button className="grafik-button">Grafik</button></Link>
-                <button className="keuangan-button">Keuangan</button>
-            </div>
             <div className="Keuangan">
                 <div className="LaporanHeader">
                     <p>Tanggal</p>
