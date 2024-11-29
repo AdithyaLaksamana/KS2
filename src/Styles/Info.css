@@ -2,16 +2,22 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%;
+    width: 80%;
     margin-top: 80px;
 }
 
+.info-header{
+    width: 70%;
+    display: flex;
+    align-items: center;
+    position: relative;
+    border-bottom: 3px solid #766868;
+}
+
 .info h1 {
+    width: 100%;
     text-align: center;
     font-weight: bold;
-    padding: 30px;
-    border-bottom: 3px solid #766868;
-    width: 80%;
     text-transform: uppercase;
 }
 
@@ -20,4 +26,16 @@
     width: 100%;
     overflow-y: auto;
     padding: 30px 80px 50px;
-  }
+}
+
+.edit-category{
+    position: absolute;
+    top: 50%;
+    left: 20px;
+    transform: translateY(-50%);
+    width: 50px;
+    aspect-ratio: 1;
+    border-radius: 15px;
+    font-size: 30px;
+    background-color: transparent;
+}

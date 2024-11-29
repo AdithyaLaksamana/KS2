@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../Styles/Produk.css";
 import { Link, useNavigate} from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+
 
 function Produk() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showOptions, setShowOptions] = useState(false);
 
   const navigate = useNavigate();
 
@@ -39,44 +41,40 @@ function Produk() {
     return <div>{error}</div>;
   }
 
-
-  const handleAddClick = () => {
-    setShowOptions(!showOptions); // Toggle visibilitas daftar
-  };
-
   return (
     <div className="product-list">
-      <div className="New">
-        <button onClick={handleAddClick}>New</button>
-        {showOptions && (
-        <div className="addButton">
-          <Link to='/add_produk'><button className="addProduk"><h2> Tambahakan Produk </h2></button></Link>
-          <Link to='/add_grup'><button className="adGroup"><h2> Tambahkan Grup </h2></button></Link>
-        </div>
-        )}
-      </div>
-
-      {items.map((item) => (
-
-        <div key={item.id} className="product-card">
-          <img src={item.image} alt={item.name} className="product-image" />
-          <div className="product-info">
-            <h2>{item.name}</h2>
-            <p>{item.description}</p>
-          </div>  
-
-          <div className="product-stock">
-            <span>Stok</span>
-            <strong>{item.amount}</strong>
+      {!error && (
+        <>
+          <div className="New">
+            <Link to="/add_produk">
+              <div className="add-produk">
+                <FontAwesomeIcon icon={faPlus} className="add-produk-icon" /> Tambah Produk
+              </div>
+            </Link>
           </div>
+          {items.map((item) => (
 
-        <button className="edit-produk" onClick={() => handleEdit(item.id)}>
-          <h2> ⟩ </h2>
-        </button>
+            <div key={item.id} className="product-card">
+              <img src={item.image} alt={item.name} className="product-image" />
+              <div className="product-info">
+                <h2>{item.name}</h2>
+                <p>{item.description}</p>
+              </div>  
 
-        </div>
-        
-      ))}
+              <div className="product-stock">
+                <span>Stok</span>
+                <strong>{item.amount}</strong>
+              </div>
+
+            <button className="edit-produk" onClick={() => handleEdit(item.id)}>
+              <h2> ⟩ </h2>
+            </button>
+
+            </div>
+            
+          ))}
+        </>
+      )}
     </div>
   );
 }

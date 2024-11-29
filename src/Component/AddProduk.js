@@ -11,7 +11,9 @@ function AddProduk() {
     const [quantity, setQuantity] = useState('');
     const [purchase, setPurchase] = useState('');
     const [sell, setSell] = useState('');
+    const [image, setImage] = useState('');
     const [imageSrc, setImageSrc] = useState(null);
+    const [file, setfile] = useState(null);
     const [imageName, setImageName] = useState('');
     const [categories, setCategories] = useState([]);
     const fileInputRef = useRef(null);
@@ -50,7 +52,10 @@ function AddProduk() {
     }, [itemId]);
 
     const handleImageChange = (e) => {
-        const file = e.target.files[0];
+        setfile(e.target.files[0]);
+        console.log('file:', file)
+        setImage(e.target.files[0])
+        console.log('image: ',Image)
         if (file) {
             setImageName(file.name);
             const reader = new FileReader();
@@ -78,10 +83,10 @@ function AddProduk() {
             amount: quantity,
             purchasePrice: purchase,
             sellPrice: sell,
-            image: imageSrc || '/assets/images/aqua.png',
+            // image: imageSrc || '/assets/images/aqua.png',
+            image: file,
         };
-        console.log(imageName);
-
+        
         try {
             let response;
             if (itemId) {

@@ -11,12 +11,24 @@
     display: flex;
     border-bottom: 3px solid #766868;
     align-items: center;
+    position: relative;
 }
 
-.grupButton{
+.viewButton{
+    position: absolute;
+    top: 50%;
+    left: 20px;
+    transform: translateY(-50%);
     width: 50px;
     aspect-ratio: 1;
     border-radius: 15px;
+    font-size: 30px;
+    background-color: transparent;
+}
+
+
+.viewButton:hover, .editButton:hover{
+    color: gray;
 }
 
 .grupHeader h1 {
@@ -42,7 +54,7 @@
 .grup-card {
     width: 200px;
     aspect-ratio: 1;
-    background-color: #f8f8f8;
+    /* background-color: #f8f8f8; */
     border-radius: 30px;
     box-shadow: 10px 10px 3px rgba(0, 0, 0, 0.1);
     text-align: center;
@@ -65,7 +77,7 @@
 }
 
 .grup-list-2{
-    width: 40%;
+    width: 60%;
     margin-top: 25px;
 }
 
@@ -83,6 +95,32 @@
     display: flex;
     flex-direction: column;
     color: black;
+}
+
+.refresh{
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.add-grup {
+    font-size: 24px;
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    cursor: pointer;
+    color: black;
+}
+.add-grup:hover{
+    color: gray;
+}
+.add-grup-icon {
+    font-size: 40px;
+    display: block;
+}
+
+.grup a{
+    text-decoration: none;
 }
 
 @media (max-width: 1200px){

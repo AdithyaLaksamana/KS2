@@ -1,16 +1,34 @@
-import React, {useState, useRef} from "react";
+import React, {useState, useRef, useEffect} from "react";
 import axios from "axios";
 import "../Styles/Add.css";
-import {FaPlusCircle } from "react-icons/fa";
-import { Link } from 'react-router-dom';
+import { FaPlusCircle } from "react-icons/fa";
+import { Link, useLocation } from 'react-router-dom';
 
 function AddGrup() {
     const [imageSrc, setImageSrc] = useState(null);
     const [groupName, setGroupName] = useState('');
     const [groups, setGroups] = useState([]); 
-    const [imageName, setImageName] = useState(''); // State untuk menyimpan nama gambar
-
+    const [imageName, setImageName] = useState('');
     const fileInputRef = useRef(null); 
+    const location = useLocation();
+    const categoryId = location.state?.categoryId;
+
+    useEffect(() => {
+        console.log("categoryId:", categoryId);
+        if (categoryId) {
+            const fetchProduct = async () => {
+                try {
+                    const response = await axios.get(`/api/category/${categoryId}`);
+                    const group = response.data;
+                    setGroupName(group.name)
+                    // setImageSrc(category.image);
+                } catch (error) {
+                    console.error('Gagal mengambil data produk:', error);
+                }
+            };
+            fetchProduct();
+        }
+    }, [categoryId]);
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -30,6 +48,11 @@ function AddGrup() {
 
     
     const handleSave = async () => {
+        if (!groupName){
+            alert("Harap lengkapi semua kolom!");
+            return;
+        }
+
         const newGroup = {
             name: groupName,
             image: imageSrc || '/assets/images/aqua.png',
@@ -38,13 +61,16 @@ function AddGrup() {
         console.log("gambar:" + imageName)
     
         try {
-            const response = await axios.post('/api/category/create', newGroup);
-            console.log('Kategori berhasil disimpan:', response.data);
-    
-            // Menambahkan kategori ke state local jika berhasil disimpan
+            let response;
+            if (categoryId) {
+                response = await axios.put(`/api/item/${categoryId}/update`, newGroup);
+                console.log('Kategori berhasil diupdate:', response.data);
+            } else {
+                const response = await axios.post('/api/category/create', newGroup);
+                console.log('Kategori berhasil disimpan:', response.data);
+            }
             setGroups([...groups, response.data]);
-    
-            // Reset input field setelah menyimpan
+
             setGroupName('');
             setImageSrc(null);
         } catch (error) {
