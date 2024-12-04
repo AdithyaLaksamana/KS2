@@ -5,16 +5,14 @@ import { FaQrcode, FaPlusCircle } from "react-icons/fa";
 import { Link, useLocation } from 'react-router-dom';
 
 function AddProduk() {
+    const [barcode, setBarcode] = useState('');
     const [productName, setProductName] = useState('');
     const [category, setCategory] = useState('');
     const [desc, setDesc] = useState('');
     const [quantity, setQuantity] = useState('');
     const [purchase, setPurchase] = useState('');
     const [sell, setSell] = useState('');
-    const [image, setImage] = useState('');
-    const [imageSrc, setImageSrc] = useState(null);
-    const [file, setfile] = useState(null);
-    const [imageName, setImageName] = useState('');
+    const [imageBase64, setImageBase64] = useState('');
     const [categories, setCategories] = useState([]);
     const fileInputRef = useRef(null);
     const location = useLocation();
@@ -36,13 +34,14 @@ function AddProduk() {
                 try {
                     const response = await axios.get(`/api/item/${itemId}`);
                     const product = response.data;
+                    setBarcode(product.barcode);
                     setProductName(product.name);
                     setCategory(product.category);
                     setDesc(product.description);
                     setQuantity(product.amount);
                     setPurchase(product.purchasePrice);
                     setSell(product.sellPrice);
-                    setImageSrc(product.image);
+                    setImageBase64(product.imageBase64); // Set the Base64 image
                 } catch (error) {
                     console.error('Gagal mengambil data produk:', error);
                 }
@@ -52,15 +51,11 @@ function AddProduk() {
     }, [itemId]);
 
     const handleImageChange = (e) => {
-        setfile(e.target.files[0]);
-        console.log('file:', file)
-        setImage(e.target.files[0])
-        console.log('image: ',Image)
+        const file = e.target.files[0];
         if (file) {
-            setImageName(file.name);
             const reader = new FileReader();
             reader.onloadend = () => {
-                setImageSrc(reader.result);
+                setImageBase64(reader.result.split(',')[1]); // Extract base64 data
             };
             reader.readAsDataURL(file);
         }
@@ -71,22 +66,22 @@ function AddProduk() {
     };
 
     const handleSave = async () => {
-        if (!productName || !category || !quantity || !purchase || !sell) {
+        if (!barcode || !productName || !category || !quantity || !purchase || !sell) {
             alert("Harap lengkapi semua kolom!");
             return;
         }
 
         const newProduct = {
+            barcode: parseInt(barcode),
             name: productName,
             category: category,
             description: desc,
-            amount: quantity,
-            purchasePrice: purchase,
-            sellPrice: sell,
-            // image: imageSrc || '/assets/images/aqua.png',
-            image: file,
+            amount: parseInt(quantity),
+            purchasePrice: parseInt(purchase),
+            sellPrice: parseInt(sell),
+            imageBase64: imageBase64 || null, // Null jika tidak ada gambar
         };
-        
+
         try {
             let response;
             if (itemId) {
@@ -96,18 +91,19 @@ function AddProduk() {
                 response = await axios.post('/api/item/create', newProduct);
                 console.log('Produk berhasil disimpan:', response.data);
             }
+            // Reset form setelah menyimpan
+            setBarcode('');
             setProductName('');
             setCategory('');
             setDesc('');
             setQuantity('');
             setPurchase('');
             setSell('');
-            setImageSrc(null);
+            setImageBase64('');
         } catch (error) {
             console.error('Gagal menyimpan produk:', error);
         }
     };
-    
 
     return (
         <div className="Add">
@@ -115,46 +111,91 @@ function AddProduk() {
                 <div className="content">
                     <div className="input-produk">
                         <label className="label">QR Code/Barcode</label>
-                        <div className="Barcode">
-                            <input className="input-field" type="text" placeholder="QR Code/Barcode" aria-label="QR Code/Barcode"/>
-                            <Link to="/scanner"><FaQrcode /></Link>
-                        </div>
+                        <input
+                            className="input-field"
+                            type="text"
+                            placeholder="QR Code/Barcode"
+                            value={barcode}
+                            onChange={(e) => setBarcode(e.target.value)}
+                        />
                     </div>
                     <div className="input-produk">
                         <label className="label">Nama Produk</label>
-                        <input className="input-field" type="text" placeholder="Nama Produk" aria-label="Nama Produk" value={productName} onChange={(e) => setProductName(e.target.value)}/>
+                        <input
+                            className="input-field"
+                            type="text"
+                            placeholder="Nama Produk"
+                            value={productName}
+                            onChange={(e) => setProductName(e.target.value)}
+                        />
                     </div>
                     <div className="input-produk">
                         <label className="label">Kategori</label>
-                        <select className="input-field" value={category} onChange={(e) => setCategory(e.target.value)}>
+                        <select
+                            className="input-field"
+                            value={category}
+                            onChange={(e) => setCategory(e.target.value)}
+                        >
                             <option value="">Pilih Kategori</option>
                             {categories.map((cat) => (
-                                <option key={cat.id} value={cat.name}>{cat.name}</option>  // Sesuaikan dengan data kategori
+                                <option key={cat.id} value={cat.name}>{cat.name}</option>
                             ))}
                         </select>
                     </div>
-                    
                     <div className="input-produk">
-                        <label className="label">Deskripsi</label> 
-                        <input className="input-field" placeholder="Deskripsi Produk" aria-label="Deskripsi Produk" value={desc} onChange={(e) => setDesc(e.target.value)} />
+                        <label className="label">Deskripsi</label>
+                        <input
+                            className="input-field"
+                            placeholder="Deskripsi Produk"
+                            value={desc}
+                            onChange={(e) => setDesc(e.target.value)}
+                        />
                     </div>
                     <div className="input-produk">
                         <label className="label">Jumlah</label>
-                        <input className="input-field" type="number" placeholder="Kuantitas" aria-label="Kuantitas" value={quantity} onChange={(e) => setQuantity(e.target.value)}/>
+                        <input
+                            className="input-field"
+                            type="number"
+                            placeholder="Kuantitas"
+                            value={quantity}
+                            onChange={(e) => setQuantity(e.target.value)}
+                        />
                     </div>
                     <div className="input-produk">
                         <label className="label">Harga Beli</label>
-                        <input className="input-field" type="number" placeholder="Harga Beli" aria-label="Harga Beli" value={purchase} onChange={(e) => setPurchase(e.target.value)}/>
+                        <input
+                            className="input-field"
+                            type="number"
+                            placeholder="Harga Beli"
+                            value={purchase}
+                            onChange={(e) => setPurchase(e.target.value)}
+                        />
                     </div>
                     <div className="input-produk">
                         <label className="label">Harga Jual</label>
-                        <input className="input-field" type="number" placeholder="Harga Jual" aria-label="Harga Jual" value={sell} onChange={(e) => setSell(e.target.value)}/>
+                        <input
+                            className="input-field"
+                            type="number"
+                            placeholder="Harga Jual"
+                            value={sell}
+                            onChange={(e) => setSell(e.target.value)}
+                        />
                     </div>
                     <div className="input-produk">
                         <label className="label">Gambar Produk</label>
                         <div className="addImage">
-                            <img src={imageSrc || 'https://placehold.co/100x100'} alt="" className={`uploaded-image ${imageSrc ? "no-radius" : ""}`}/>
-                            <input type="file" accept="image/*" onChange={handleImageChange} style={{ display: 'none' }} ref={fileInputRef}/>
+                            <img
+                                src={imageBase64 ? `data:image/png;base64,${imageBase64}` : 'https://placehold.co/100x100'}
+                                alt="Preview"
+                                className="uploaded-image"
+                            />
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageChange}
+                                style={{ display: 'none' }}
+                                ref={fileInputRef}
+                            />
                             <FaPlusCircle className="openFile" onClick={openFileDialog} />
                         </div>
                     </div>
