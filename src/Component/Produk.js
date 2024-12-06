@@ -18,19 +18,19 @@ function Produk() {
   };
 
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchProducts = async () => {
       try {
         const response = await axios.get('/api/item');
         setItems(response.data);
         setLoading(false);
         console.log(response.data);
       } catch (err) {
-        setError('Gagal memuat kategori');
+        setError('Gagal memuat produk');
         setLoading(false);
       }
     };
   
-    fetchCategories();
+    fetchProducts();
   }, []);
   
   if (loading) {
@@ -52,10 +52,14 @@ function Produk() {
               </div>
             </Link>
           </div>
-          {items.map((item) => (
 
+          {items.map((item) => (
             <div key={item.id} className="product-card">
-              <img src={item.image} alt={item.name} className="product-image" />
+              <img
+                src={`data:image/png;base64,${item.imageBase64}`} 
+                alt={item.name}
+                className="product-image"
+              />
               <div className="product-info">
                 <h2>{item.name}</h2>
                 <p>{item.description}</p>
@@ -66,12 +70,10 @@ function Produk() {
                 <strong>{item.amount}</strong>
               </div>
 
-            <button className="edit-produk" onClick={() => handleEdit(item.id)}>
-              <h2> ⟩ </h2>
-            </button>
-
+              <button className="edit-produk" onClick={() => handleEdit(item.id)}>
+                <h2> ⟩ </h2>
+              </button>
             </div>
-            
           ))}
         </>
       )}

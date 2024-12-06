@@ -2,23 +2,25 @@ import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import "../Styles/Add.css";
 import { FaQrcode, FaPlusCircle } from "react-icons/fa";
-import { Link, useLocation } from 'react-router-dom';
-
+import { useLocation, useNavigate } from 'react-router-dom';
+import Scan from './Scan';
 function AddProduk() {
+    const [barcode, setBarcode] = useState('');
     const [productName, setProductName] = useState('');
     const [category, setCategory] = useState('');
     const [desc, setDesc] = useState('');
     const [quantity, setQuantity] = useState('');
     const [purchase, setPurchase] = useState('');
     const [sell, setSell] = useState('');
-    const [image, setImage] = useState('');
-    const [imageSrc, setImageSrc] = useState(null);
-    const [file, setfile] = useState(null);
-    const [imageName, setImageName] = useState('');
+    const [imageBase64, setImageBase64] = useState('');
+    const [showScanner, setShowScanner] = useState(false);
     const [categories, setCategories] = useState([]);
     const fileInputRef = useRef(null);
     const location = useLocation();
     const itemId = location.state?.itemId;
+    const barcodeFromScan = location.state?.barcode;
+    
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -30,37 +32,48 @@ function AddProduk() {
             }
         };
         fetchCategories();
-        
+
         if (itemId) {
             const fetchProduct = async () => {
                 try {
                     const response = await axios.get(`/api/item/${itemId}`);
                     const product = response.data;
+                    setBarcode(product.barcode);
                     setProductName(product.name);
                     setCategory(product.category);
                     setDesc(product.description);
                     setQuantity(product.amount);
                     setPurchase(product.purchasePrice);
                     setSell(product.sellPrice);
-                    setImageSrc(product.image);
+                    setImageBase64(product.imageBase64);
                 } catch (error) {
                     console.error('Gagal mengambil data produk:', error);
                 }
             };
             fetchProduct();
         }
-    }, [itemId]);
+
+        if (barcodeFromScan) {
+            setBarcode(barcodeFromScan);
+            const autoCloseTimer = setTimeout(() => {
+                handleClose(); // Menutup modal secara otomatis
+            }, 3000); // 3 detik setelah barcode dipindai
+        
+            return () => clearTimeout(autoCloseTimer); 
+        }
+    }, [itemId, barcodeFromScan]);
+      
+    const handleClose = () => {
+        setShowScanner(false);
+        console.log("Modal ditutup", barcode);
+    };
 
     const handleImageChange = (e) => {
-        setfile(e.target.files[0]);
-        console.log('file:', file)
-        setImage(e.target.files[0])
-        console.log('image: ',Image)
+        const file = e.target.files[0];
         if (file) {
-            setImageName(file.name);
             const reader = new FileReader();
             reader.onloadend = () => {
-                setImageSrc(reader.result);
+                setImageBase64(reader.result.split(',')[1]);
             };
             reader.readAsDataURL(file);
         }
@@ -71,43 +84,45 @@ function AddProduk() {
     };
 
     const handleSave = async () => {
-        if (!productName || !category || !quantity || !purchase || !sell) {
+        if (!barcode || !productName || !category || !quantity || !purchase || !sell) {
             alert("Harap lengkapi semua kolom!");
             return;
         }
 
         const newProduct = {
+            barcode: parseInt(barcode),
             name: productName,
             category: category,
             description: desc,
-            amount: quantity,
-            purchasePrice: purchase,
-            sellPrice: sell,
-            // image: imageSrc || '/assets/images/aqua.png',
-            image: file,
+            amount: parseInt(quantity),
+            purchasePrice: parseInt(purchase),
+            sellPrice: parseInt(sell),
+            imageBase64: imageBase64 || null,
         };
-        
+
         try {
             let response;
             if (itemId) {
                 response = await axios.put(`/api/item/${itemId}/update`, newProduct);
-                console.log('Produk berhasil diupdate:', response.data);
+                alert("Produk berhasil diperbarui!");
+                navigate(-1);
             } else {
                 response = await axios.post('/api/item/create', newProduct);
-                console.log('Produk berhasil disimpan:', response.data);
+                alert("Produk berhasil dibuat!");
+                navigate(-1);
             }
+            setBarcode('');
             setProductName('');
             setCategory('');
             setDesc('');
             setQuantity('');
             setPurchase('');
             setSell('');
-            setImageSrc(null);
+            setImageBase64('');
         } catch (error) {
             console.error('Gagal menyimpan produk:', error);
         }
     };
-    
 
     return (
         <div className="Add">
@@ -116,8 +131,14 @@ function AddProduk() {
                     <div className="input-produk">
                         <label className="label">QR Code/Barcode</label>
                         <div className="Barcode">
-                            <input className="input-field" type="text" placeholder="QR Code/Barcode" aria-label="QR Code/Barcode"/>
-                            <Link to="/scanner"><FaQrcode /></Link>
+                            <input
+                                className="input-field"
+                                type="text"
+                                placeholder="QR Code/Barcode"
+                                value={barcode}
+                                onChange={(e) => setBarcode(e.target.value)}
+                            />
+                            <FaQrcode onClick={() => setShowScanner(true)} />
                         </div>
                     </div>
                     <div className="input-produk">
@@ -153,15 +174,37 @@ function AddProduk() {
                     <div className="input-produk">
                         <label className="label">Gambar Produk</label>
                         <div className="addImage">
-                            <img src={imageSrc || 'https://placehold.co/100x100'} alt="" className={`uploaded-image ${imageSrc ? "no-radius" : ""}`}/>
-                            <input type="file" accept="image/*" onChange={handleImageChange} style={{ display: 'none' }} ref={fileInputRef}/>
+                            <img
+                                src={imageBase64 ? `data:image/png;base64,${imageBase64}` : 'https://placehold.co/100x100'}
+                                alt="Preview"
+                                className="uploaded-image"
+                            />
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageChange}
+                                style={{ display: 'none' }}
+                                ref={fileInputRef}
+                            />
                             <FaPlusCircle className="openFile" onClick={openFileDialog} />
                         </div>
                     </div>
-                    <Link to=""><button className="cancelButton">CANCEL</button></Link>
+                    <button className="cancelButton" onClick={() => window.history.back()}>
+                        CANCEL
+                    </button>
                     <button className="saveButton" onClick={handleSave}>SAVE</button>
                 </div>
             </div>
+            {showScanner && (
+                <div className="modal-overlay" onClick={() => setShowScanner(false)}>
+                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        <button className="close-button" onClick={() => setShowScanner(false)}>
+                            X
+                        </button>
+                        <Scan />
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

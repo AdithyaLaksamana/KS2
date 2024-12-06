@@ -62,7 +62,11 @@ function Kategori() {
         <div className="info-list">
             {filteredProduk.sort((a, b) => a.amount - b.amount).map((item) => (
             <div key={item.id} className="product-card">
-              <img src={item.image} alt={item.name} className="product-image" />
+              <img
+                src={`data:image/png;base64,${item.imageBase64}`} 
+                alt={item.name}
+                className="product-image"
+              />
               <div className="product-info">
                 <h2>{item.name}</h2>
                 <p>{item.description}</p>

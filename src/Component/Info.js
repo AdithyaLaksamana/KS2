@@ -40,9 +40,6 @@ function Info() {
     <div className="info">
       <div className="info-header">
         <Link to="/add_grup">
-          <button className="editButton">
-            <FontAwesomeIcon icon={faPen} />
-          </button>
         </Link>
         <h1>Kategori</h1>
       </div>
@@ -50,7 +47,11 @@ function Info() {
             {items.sort((a, b) => a.amount - b.amount).map((item) => (
               item.amount <= 30 && (
                 <div key={item.id} className="product-card">
-                  <img src={item.image} alt={item.name} className="product-image" />
+              <img
+                src={`data:image/png;base64,${item.imageBase64}`} 
+                alt={item.name}
+                className="product-image"
+              />
                   <div className="product-info">
                     <h2>{item.name}</h2>
                     <p>{item.description}</p>

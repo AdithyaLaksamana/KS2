@@ -1,136 +1,94 @@
-import React, { Component } from 'react'
-import Quagga from 'quagga'
+import React, { useRef, useEffect, useState } from 'react';
+import Webcam from 'react-webcam';
+import { BrowserMultiFormatReader } from '@zxing/browser';
+import { useNavigate } from 'react-router-dom';
+import '../Styles/Scanner.css';
 
-const originalGetContext = HTMLCanvasElement.prototype.getContext;
+const Scanner = () => {
+  const webcamRef = useRef(null);
+  const [barcode, setBarcode] = useState(null);
+  const [time, setTime] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const codeReader = useRef(new BrowserMultiFormatReader()).current;
+  const isScanning = useRef(true);
+  const navigate = useNavigate();
 
-HTMLCanvasElement.prototype.getContext = function(type, options) {
-    if (type === '2d') {
-        options = { ...options, willReadFrequently: true };
-    }
-    return originalGetContext.call(this, type, options);
-};
+  useEffect(() => {
+    const scanBarcode = async () => {
+      if (webcamRef.current) {
+        try {
+          await codeReader.decodeFromVideoDevice(
+            undefined,
+            webcamRef.current.video,
+            (result) => {
+              if (result && isScanning.current) {
+                setBarcode(result.text);
+                isScanning.current = false;
+                setIsLoading(true);
+                
+                setTimeout(() => {
+                  setIsLoading(false);
+                  let countdown = 3;
+                  setTime(countdown);
+                  const timer = setInterval(() => {
+                    countdown -= 1;
+                    setTime(countdown);
+                    if (countdown <= 0) {
+                      clearInterval(timer);
+                      setBarcode(null);
+                      setTime(0);
+                      isScanning.current = true;
+                    }
+                  }, 1000);
+                }, 1000);
 
-class Scan extends Component {
-  componentDidMount() {
-    Quagga.init(
-      {
-        
-        inputStream: {
-          type: 'LiveStream',
-          constraints: {
-            width: 640,
-            height: 320,
-            facingMode: 'environment',
-          },
-          area: { // defines rectangle of the detection/localization area
-            top: "10%",    // top offset
-            right: "10%",  // right offset
-            left: "10%",   // left offset
-            bottom: "10%"  // bottom offset
-          },
-        },
-        locator: {
-            halfSample: false,
-            patchSize: "medium", // x-small, small, medium, large, x-large
-            debug: {
-                showCanvas: true,
-                showPatches: false,
-                showFoundPatches: false,
-                showSkeleton: false,
-                showLabels: false,
-                showPatchLabels: false,
-                showRemainingPatchLabels: false,
-                boxFromPatches: {
-                    showTransformed: true,
-                    showTransformedBox: true,
-                    showBB: true
+                setTimeout(() => {
+                  navigate('/add_produk', { state: { barcode: result.text } });
+                }, 4000);
               }
             }
-        },
-        numOfWorkers: 4,
-        decoder: {
-            readers: ['code_128_reader'],
-            debug: {
-                drawBoundingBox: true,
-                showFrequency: true,
-                drawScanline: true,
-                showPattern: true
-            },
-        },
-        locate: true,
-      },
-      function(err) {
-        if (err) {
-          return console.log(err)
+          );
+        } catch (err) {
+          console.error(err);
+          setError(err);
         }
-        Quagga.start()
-      },
-    )
-    Quagga.onDetected(this._onDetected)
-  }
+      }
+    };
 
-  componentWillUnmount() {
-    Quagga.offDetected(this._onDetected)
-    Quagga.stop()
-  }
-
-  _onDetected = result => {
-    this.props.onDetected(result)
-  }
-
-  render() {
-    return <div id="interactive" className="viewport"/>
+    if (!barcode) {
+      scanBarcode();
     }
-}
 
-export default Scan
+    const currentWebcam = webcamRef.current;
 
-// import React, { Component } from 'react'
-// import Scan from './Scan'
-// import { Fab, TextareaAutosize, Paper } from '@mui/material';
-// import {ArrowBack} from '@mui/icons-material'
-// import { Link } from "react-router-dom";
+    return () => {
+      codeReader.decodeFromVideoDevice(null, currentWebcam?.video, () => {});
+    };
+  }, [barcode, codeReader, navigate]);
 
-// class Scanner extends Component {
-//   state = {
-//     results: [],
-//   }
+  return (
+    <div className="scanner-container">
+      <div className="scanner-overlay">
+        <div className="scanner-frame">
+          <Webcam ref={webcamRef} className="webcam" />
+          <div className="scanner-line"></div>
+        </div>
+      </div>
+      {error ? (
+        <p className="scan-text error">Terjadi kesalahan dengan kamera atau scanner.</p>
+      ) : isLoading ? (
+        <p className="scan-text">Loading...</p>
+      ) : barcode ? (
+        <>
+          <p className="scan-text">Barcode: {barcode}</p>
+          {time > 0 && <p className="scan-text">Loading... {time} detik...</p>}
+        </>
+      ) : (
+        <p className="scan-text">Scanning...</p>
+      )}
+    </div>
+  );
+};
 
-//   _scan = () => {
-//     this.setState({ scanning: !this.state.scanning })
-//   }
-
-//   _onDetected = result => {
-//     console.log(result)
-//     this.setState({ results: [] })
-//     this.setState({ results: this.state.results.concat([result]) })
-//   }
-
-//   render() {
-//     return (
-//       <div>
-//         <Link to="/">
-//             <Fab style={{marginRight:10}} color="secondary">
-//                 <ArrowBack/>
-//             </Fab>
-//         </Link>
-//         <span>Barcode Scanner</span>
-        
-//         <Paper variant="outlined" style={{marginTop:30, width:640, height:320}}>
-//           <Scan onDetected={this._onDetected} />
-//         </Paper>
-
-
-//         <TextareaAutosize
-//           style={{ fontSize: 32, width: 320, height: 100, marginTop: 30 }}
-//           maxRows={4}
-//           value={this.state.results[0] ? this.state.results[0].codeResult.code : 'No data scanned'} // Controlled component
-//         />
-
-
-//       </div>
-//     )
-//   }
-// }
-
-// export default Scanner
+export default Scanner;

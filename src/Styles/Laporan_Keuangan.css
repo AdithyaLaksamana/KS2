@@ -1,0 +1,53 @@
+.FilterControls {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-bottom: 50px;
+    justify-items: center;
+}
+
+.filter-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.filter-item label {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.filter-item select {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #cccccc;
+    background-color: #f9f9f9;
+    width: 100%;
+}
+
+.FilterControls button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background-color 0.3s ease-in-out;
+    grid-column: span 2;
+}
+
+.FilterControls button:hover {
+    background-color: #0056b3;
+}
+
+/* CSS untuk menyesuaikan kolom saat ada 1 elemen yang tersisa */
+.FilterControls.single-last-item {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.FilterControls.single-last-item .filter-item:last-child {
+    grid-column: span 2;
+}

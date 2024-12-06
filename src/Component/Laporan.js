@@ -20,7 +20,6 @@ function Laporan() {
       />
       <label htmlFor="check" className="button"></label>
 
-      {/* Menampilkan halaman berdasarkan status checkbox */}
       {checked ? <Keuangan /> : <Grafik />}
     </div>
   );
