@@ -1,20 +1,21 @@
 .FilterControls {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
-    margin-bottom: 50px;
+    gap: 5px;
+    margin-bottom: 30px;
     justify-items: center;
 }
 
 .filter-item {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    margin: 0 20px;
 }
 
 .filter-item label {
     font-size: 16px;
     font-weight: bold;
+    margin: 5px 0;
 }
 
 .filter-item select {
@@ -43,7 +44,6 @@
     background-color: #0056b3;
 }
 
-/* CSS untuk menyesuaikan kolom saat ada 1 elemen yang tersisa */
 .FilterControls.single-last-item {
     grid-template-columns: repeat(2, 1fr);
 }

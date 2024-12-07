@@ -14,27 +14,32 @@ function Laporan_Keuangan() {
     const [viewType, setViewType] = useState("week"); // Tampilan default: per minggu
     const [selectedWeek, setSelectedWeek] = useState(currentWeek.toString()); // Minggu default: minggu saat ini
     const [selectedDay, setSelectedDay] = useState(""); // Pilihan hari
-    const [totalHarga, setTotalHarga] = useState(0);
+    const [selectedType, setSelectedType] = useState("all"); 
+    // const [totalHarga, setTotalHarga] = useState(0);
 
     useEffect(() => {
-        // Fetch data dari API
-        fetch("http://localhost:8080/api/transaction") // Ganti URL sesuai endpoint API Anda
+        fetch("http://localhost:8080/api/transaction")
             .then((response) => response.json())
             .then((transactions) => {
                 const transactionData = [];
 
                 transactions.forEach((transaction) => {
+                    const transactionType = transaction.transactionType;
+                    const description = transaction.description  ;
+                    console.log("Transactions: ", description)
                     transaction.items.forEach((itemData) => {
-                        const item = itemData.item; // Ambil item dari transaction
+                        const item = itemData.item;
                         const amount = itemData.amount;
-                        const price = item.sellPrice; 
-
+                        const price = item.sellPrice;
+                        
                         transactionData.push({
                             date: new Date(transaction.transactionDate),
                             name: item.name,
                             description: item.description,
                             amount: amount,
                             price: price,
+                            type: transactionType,
+                            transaction_desc : description,
                         });
                     });
                 });
@@ -44,7 +49,6 @@ function Laporan_Keuangan() {
             .catch((error) => console.error("Error fetching data:", error));
     }, []);
 
-    // Fungsi untuk mendapatkan tahun paling lama di database
     const getYearsRange = () => {
         const years = data.map((item) => item.date.getFullYear());
         const earliestYear = Math.min(...years);
@@ -58,56 +62,54 @@ function Laporan_Keuangan() {
         return range;
     };
 
-    // Fungsi untuk mendapatkan jumlah hari dalam bulan tertentu
+    const getTransactionTypes = () => {
+        const types = [...new Set(data.map((item) => item.type))];
+        return types;
+    };
+
     const getDaysInMonth = (year, month) => {
         return new Date(year, month + 1, 0).getDate();
     };
 
-    // Filter data berdasarkan input user
     const filterData = () => {
-        // Cek apakah semua input (termasuk minggu atau tanggal) sudah dipilih
-        if (!selectedYear || selectedYear === "all") {
-            // Menampilkan semua data jika tahun "Tampilkan Semua" dipilih
-            return data;
+        let filtered = data;
+
+        if (selectedYear && selectedYear !== "all") {
+            filtered = filtered.filter((item) => item.date.getFullYear().toString() === selectedYear);
         }
 
-        return data.filter((item) => {
-            const itemDate = item.date;
+        if (selectedMonth && selectedMonth !== "all") {
+            const monthIndex = parseInt(selectedMonth) - 1;
+            filtered = filtered.filter((item) => item.date.getMonth() === monthIndex);
 
-            if (selectedYear && selectedYear !== "all") {
-                if (itemDate.getFullYear().toString() !== selectedYear) return false;
+            if (viewType === "week" && selectedWeek) {
+                const weekStart = (selectedWeek - 1) * 7 + 1;
+                const weekEnd = Math.min(weekStart + 6, getDaysInMonth(selectedYear, monthIndex));
+                filtered = filtered.filter(
+                    (item) => item.date.getDate() >= weekStart && item.date.getDate() <= weekEnd
+                );
             }
 
-            if (selectedMonth && selectedMonth !== "all") {
-                const monthIndex = parseInt(selectedMonth) - 1; // Januari = 0
-                if (itemDate.getMonth() !== monthIndex) return false;
-
-                if (viewType === "week" && selectedWeek) {
-                    const weekStart = (selectedWeek - 1) * 7 + 1;
-                    const weekEnd = Math.min(weekStart + 6, getDaysInMonth(selectedYear, monthIndex));
-                    const date = itemDate.getDate();
-                    if (date < weekStart || date > weekEnd) return false;
-                }
-
-                if (viewType === "day" && selectedDay) {
-                    if (itemDate.getDate() !== parseInt(selectedDay)) return false;
-                }
+            if (viewType === "day" && selectedDay) {
+                filtered = filtered.filter((item) => item.date.getDate() === parseInt(selectedDay));
             }
+        }
 
-            return true; // Jika semua filter terpenuhi
-        });
+        if (selectedType && selectedType !== "all") {
+            filtered = filtered.filter((item) => item.type === selectedType);
+            console.log("Kategori yang dipilih: ", selectedType);
+
+        }
+
+        return filtered;
     };
 
-    // Data yang sudah difilter
     const filteredData = filterData();
-
-    // Hitung total harga
     const totalFilteredHarga = filteredData.reduce(
         (total, item) => total + item.price * item.amount,
         0
     );
 
-    // Fungsi untuk mereset ke tampilan default
     const resetToDefault = () => {
         setSelectedYear(currentYear.toString());
         setSelectedMonth(currentMonth.toString());
@@ -149,9 +151,9 @@ function Laporan_Keuangan() {
                             value={selectedMonth}
                             onChange={(e) => {
                                 setSelectedMonth(e.target.value);
-                                setViewType(""); // Reset pilihan view
-                                setSelectedWeek(""); // Reset pilihan minggu
-                                setSelectedDay(""); // Reset pilihan hari
+                                setViewType("");
+                                setSelectedWeek("");
+                                setSelectedDay("");
                             }}
                         >
                             <option value="all">Tampilkan Semua</option>
@@ -239,36 +241,59 @@ function Laporan_Keuangan() {
                     </div>
                 )}
                 
+                <div className="filter-item">
+                    <label htmlFor="typeFilter">Tipe Transaksi:</label>
+                    <select
+                        id="typeFilter"
+                        value={selectedType}
+                        onChange={(e) => {
+                            setSelectedType(e.target.value);
+                            console.log("Kategori yang dipilih: ", e.target.value);
+                          }}
+                    >
+                        <option value="all">Tampilkan Semua</option>
+                        {getTransactionTypes().map((type) => (
+                            <option key={type} value={type}>
+                                {type}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
                 <button onClick={resetToDefault}>Reset ke Default</button>
             </div>
 
             {filteredData.length > 0 && (
-                <div className="Keuangan">
-                    <div className="LaporanHeader">
-                        <p>Tanggal</p>
-                        <p>Produk</p>
-                        <p>Jumlah</p>
-                        <p>Harga</p>
-                        <p>Total</p>
-                    </div>
-                    {filteredData.map((item, index) => (
-                        <div className="LaporanItem" key={index}>
-                            <p>{item.date ? item.date.toLocaleString("id-ID") : ""}</p>
-                            <p>
-                                <strong>{item.name}</strong>
-                                <br />
-                                {item.description}
-                            </p>
-                            <p>{item.amount}</p>
-                            <p>Rp {item.price ? item.price.toLocaleString("id-ID") : ""},00</p>
-                            <p>Rp {(item.amount * item.price).toLocaleString("id-ID")},00</p>
+                    <div className="Keuangan">
+                        <div className="LaporanHeader">
+                            <p>Tipe Transaksi</p>
+                            <p className="desc">Deskripsi</p>
+                            <p>Tanggal</p>
+                            <p>Produk</p>
+                            <p>Jumlah</p>
+                            <p>Harga</p>
+                            <p>Total</p>
                         </div>
-                    ))}
-                    <div className="LaporanFooter">
-                        <p>TOTAL :</p>
-                        <p>Rp {totalFilteredHarga.toLocaleString("id-ID")},00</p>
+                        {filteredData.map((item, index) => (
+                            <div className="LaporanItem" key={index}>
+                                <p>{item.type}</p>
+                                <p>{item.transaction_desc}</p>
+                                <p>{item.date ? item.date.toLocaleString("id-ID") : ""}</p>
+                                <p>
+                                    <strong>{item.name}</strong>
+                                    <br />
+                                    {item.description}
+                                </p>
+                                <p>{item.amount}</p>
+                                <p>Rp {item.price ? item.price.toLocaleString("id-ID") : ""},00</p>
+                                <p>Rp {(item.amount * item.price).toLocaleString("id-ID")},00</p>
+                            </div>
+                        ))}
+                        <div className="LaporanFooter">
+                            <p>TOTAL :</p>
+                            <p>Rp {totalFilteredHarga.toLocaleString("id-ID")},00</p>
+                        </div>
                     </div>
-                </div>
             )}
         </div>
     );

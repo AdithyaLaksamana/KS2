@@ -104,13 +104,15 @@ function AddProduk() {
             let response;
             if (itemId) {
                 response = await axios.put(`/api/item/${itemId}/update`, newProduct);
+                console.log("Produk berhasil diperbarui:", response.data); // Tambahkan respons untuk debugging
                 alert("Produk berhasil diperbarui!");
                 navigate(-1);
             } else {
                 response = await axios.post('/api/item/create', newProduct);
+                console.log("Produk berhasil dibuat:", response.data); // Tambahkan respons untuk debugging
                 alert("Produk berhasil dibuat!");
                 navigate(-1);
-            }
+            }            
             setBarcode('');
             setProductName('');
             setCategory('');
@@ -121,6 +123,7 @@ function AddProduk() {
             setImageBase64('');
         } catch (error) {
             console.error('Gagal menyimpan produk:', error);
+            alert(`Terjadi kesalahan: ${error.message}`);
         }
     };
 
