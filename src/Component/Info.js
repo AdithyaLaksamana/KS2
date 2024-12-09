@@ -17,7 +17,7 @@ function Info() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get('/api/item');
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/item`);
         setItems(response.data);
         setLoading(false);
       } catch (err) {

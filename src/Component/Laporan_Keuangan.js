@@ -3,6 +3,7 @@ import "../Styles/Laporan.css";
 import "../Styles/Laporan_Keuangan.css";
 
 
+
 function Laporan_Keuangan() {
     const currentYear = new Date().getFullYear();
     const currentMonth = new Date().getMonth() + 1; // Bulan saat ini (1-12)
@@ -18,7 +19,7 @@ function Laporan_Keuangan() {
     // const [totalHarga, setTotalHarga] = useState(0);
 
     useEffect(() => {
-        fetch("http://localhost:8080/api/transaction")
+        fetch(`${process.env.REACT_APP_API_URL}/transaction`)
             .then((response) => response.json())
             .then((transactions) => {
                 const transactionData = [];

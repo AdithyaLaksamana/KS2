@@ -4,7 +4,6 @@ import "../Styles/Add.css";
 import { FaPlusCircle } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 
-
 function AddGrup() {
   const [imageSrc, setImageSrc] = useState(null);
   const [groupName, setGroupName] = useState("");
@@ -19,7 +18,7 @@ function AddGrup() {
     if (categoryId) {
       const fetchCategory = async () => {
         try {
-          const response = await axios.get(`/api/category/${categoryId}`);
+          const response = await axios.get(`${process.env.REACT_APP_API_URL}/category/${categoryId}`);
           const group = response.data;
           setGroupName(group.name);
           setImageSrc(group.image || null);
@@ -62,11 +61,11 @@ function AddGrup() {
     try {
       let response;
       if (categoryId) {
-        response = await axios.put(`/api/category/${categoryId}/update`, newGroup);
+        response = await axios.put(`${process.env.REACT_APP_API_URL}/category/${categoryId}/update`, newGroup);
         alert("Kategori berhasil diperbarui!");
         navigate(-1);
       } else {
-        response = await axios.post("/api/category/create", newGroup);
+        response = await axios.post(`${process.env.REACT_APP_API_URL}/category/create`, newGroup);
         alert("Kategori berhasil dibuat!");
         navigate(-1);
       }

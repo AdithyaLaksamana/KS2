@@ -5,7 +5,6 @@ import { Link, useNavigate} from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
-
 function Produk() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,7 +19,7 @@ function Produk() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('/api/item');
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/item`);
         setItems(response.data);
         setLoading(false);
         console.log(response.data);

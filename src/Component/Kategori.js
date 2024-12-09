@@ -29,10 +29,10 @@ function Kategori() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const responseItem = await axios.get('/api/item');
+        const responseItem = await axios.get(`${process.env.REACT_APP_API_URL}/item`);
         setItems(responseItem.data);
 
-        const responseCategory = await axios.get(`/api/category`);
+        const responseCategory = await axios.get(`${process.env.REACT_APP_API_URL}/category`);
         setCategory(responseCategory.data);
 
         setLoading(false);

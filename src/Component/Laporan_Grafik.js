@@ -4,6 +4,7 @@ import "../Styles/Laporan.css";
 import "../Styles/Laporan_Keuangan.css";
 import {Line } from "react-chartjs-2";
 import { Chart as ChartJS, LineElement, CategoryScale, LinearScale, PointElement, Tooltip, Legend, Filler } from "chart.js";
+
 ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Tooltip, Legend, Filler);
 
 function Laporan_Grafik() {
@@ -28,12 +29,12 @@ function Laporan_Grafik() {
   }, [selectedProduct, logs]);
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/category")
+    fetch(`${process.env.REACT_APP_API_URL}/category`)
       .then((response) => response.json())
       .then((data) => setCategories(data))
       .catch((error) => console.error("Error fetching categories:", error));
 
-    fetch("http://localhost:8080/api/item")
+    fetch(`${process.env.REACT_APP_API_URL}/item`)
       .then((response) => response.json())
       .then((data) => {
         setItems(data);
@@ -41,7 +42,7 @@ function Laporan_Grafik() {
       })
       .catch((error) => console.error("Error fetching items:", error));
 
-    fetch("http://localhost:8080/api/item/log")
+    fetch(`${process.env.REACT_APP_API_URL}/item/log`)
       .then((response) => response.json())
       .then((data) => {
         setLogs(data);

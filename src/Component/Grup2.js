@@ -5,6 +5,7 @@ import "../Styles/Grup.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGrip, faSync, faPlus } from "@fortawesome/free-solid-svg-icons";
 
+
 function Grup2() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,7 +16,7 @@ function Grup2() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get("/api/category");
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/category`);
         setCategories(response.data);
         setLoading(false);
       } catch (err) {

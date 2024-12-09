@@ -4,6 +4,7 @@ import "../Styles/Add.css";
 import { FaQrcode, FaPlusCircle } from "react-icons/fa";
 import { useLocation, useNavigate } from 'react-router-dom';
 import Scan from './Scan';
+
 function AddProduk() {
     const [barcode, setBarcode] = useState('');
     const [productName, setProductName] = useState('');
@@ -25,7 +26,7 @@ function AddProduk() {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const response = await axios.get('/api/category');
+                const response = await axios.get(`${process.env.REACT_APP_API_URL}/category`);
                 setCategories(response.data);
             } catch (error) {
                 console.error('Gagal mengambil kategori', error);
@@ -36,7 +37,7 @@ function AddProduk() {
         if (itemId) {
             const fetchProduct = async () => {
                 try {
-                    const response = await axios.get(`/api/item/${itemId}`);
+                    const response = await axios.get(`${process.env.REACT_APP_API_URL}/item/${itemId}`);
                     const product = response.data;
                     setBarcode(product.barcode);
                     setProductName(product.name);
@@ -103,12 +104,12 @@ function AddProduk() {
         try {
             let response;
             if (itemId) {
-                response = await axios.put(`/api/item/${itemId}/update`, newProduct);
+                response = await axios.put(`${process.env.REACT_APP_API_URL}/item/${itemId}/update`, newProduct);
                 console.log("Produk berhasil diperbarui:", response.data); // Tambahkan respons untuk debugging
                 alert("Produk berhasil diperbarui!");
                 navigate(-1);
             } else {
-                response = await axios.post('/api/item/create', newProduct);
+                response = await axios.post(`${process.env.REACT_APP_API_URL}/item/create`, newProduct);
                 console.log("Produk berhasil dibuat:", response.data); // Tambahkan respons untuk debugging
                 alert("Produk berhasil dibuat!");
                 navigate(-1);
