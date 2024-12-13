@@ -20,7 +20,11 @@ function AddProduk() {
     const location = useLocation();
     const itemId = location.state?.itemId;
     const barcodeFromScan = location.state?.barcode;
-    
+    const handleScanned = (scannedBarcode) => {
+        setBarcode(scannedBarcode); // Update barcode
+        setShowScanner(false); // Tutup modal
+    };
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -56,18 +60,33 @@ function AddProduk() {
 
         if (barcodeFromScan) {
             setBarcode(barcodeFromScan);
-            const autoCloseTimer = setTimeout(() => {
-                handleClose(); // Menutup modal secara otomatis
-            }, 3000); // 3 detik setelah barcode dipindai
-        
-            return () => clearTimeout(autoCloseTimer); 
+            fetchOpenFoodFacts(barcodeFromScan);
         }
     }, [itemId, barcodeFromScan]);
-      
-    const handleClose = () => {
-        setShowScanner(false);
-        console.log("Modal ditutup", barcode);
+
+    const fetchOpenFoodFacts = async (barcode) => {
+        try {
+            const response = await axios.get(`https://world.openfoodfacts.org/api/v0/product/${barcode}.json`);
+            if (response.data.status === 1) {
+                const product = response.data.product;
+                setProductName(product.product_name || '');
+                setDesc(product.creator || '');
+
+                if (product.image_url) {
+                    const imageResponse = await axios.get(product.image_url, { responseType: 'arraybuffer' });
+                    const base64Image = Buffer.from(imageResponse.data, 'binary').toString('base64');
+                    setImageBase64(base64Image);
+                }
+                alert('Data produk berhasil diambil dari Open Food Facts!');
+            } else {
+                alert('Produk tidak ditemukan di Open Food Facts.');
+            }
+        } catch (error) {
+            console.error('Gagal mencari barcode di Open Food Facts:', error);
+            alert('Terjadi kesalahan saat mencari produk di Open Food Facts.');
+        }
     };
+
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -105,23 +124,12 @@ function AddProduk() {
             let response;
             if (itemId) {
                 response = await axios.put(`${process.env.REACT_APP_API_URL}/item/${itemId}/update`, newProduct);
-                console.log("Produk berhasil diperbarui:", response.data); // Tambahkan respons untuk debugging
                 alert("Produk berhasil diperbarui!");
-                navigate(-1);
             } else {
                 response = await axios.post(`${process.env.REACT_APP_API_URL}/item/create`, newProduct);
-                console.log("Produk berhasil dibuat:", response.data); // Tambahkan respons untuk debugging
                 alert("Produk berhasil dibuat!");
-                navigate(-1);
-            }            
-            setBarcode('');
-            setProductName('');
-            setCategory('');
-            setDesc('');
-            setQuantity('');
-            setPurchase('');
-            setSell('');
-            setImageBase64('');
+            }
+            navigate(-1);
         } catch (error) {
             console.error('Gagal menyimpan produk:', error);
             alert(`Terjadi kesalahan: ${error.message}`);
@@ -142,38 +150,70 @@ function AddProduk() {
                                 value={barcode}
                                 onChange={(e) => setBarcode(e.target.value)}
                             />
-                            <FaQrcode onClick={() => setShowScanner(true)} />
+                            <FaQrcode onClick={() => setShowScanner(true)}/>
                         </div>
                     </div>
                     <div className="input-produk">
                         <label className="label">Nama Produk</label>
-                        <input className="input-field" type="text" placeholder="Nama Produk" aria-label="Nama Produk" value={productName} onChange={(e) => setProductName(e.target.value)}/>
+                        <input
+                            className="input-field"
+                            type="text"
+                            placeholder="Nama Produk"
+                            value={productName}
+                            onChange={(e) => setProductName(e.target.value)}
+                        />
                     </div>
                     <div className="input-produk">
                         <label className="label">Kategori</label>
-                        <select className="input-field" value={category} onChange={(e) => setCategory(e.target.value)}>
+                        <select
+                            className="input-field"
+                            value={category}
+                            onChange={(e) => setCategory(e.target.value)}
+                        >
                             <option value="">Pilih Kategori</option>
                             {categories.map((cat) => (
-                                <option key={cat.id} value={cat.name}>{cat.name}</option>  // Sesuaikan dengan data kategori
+                                <option key={cat.id} value={cat.name}>{cat.name}</option>
                             ))}
                         </select>
                     </div>
-                    
                     <div className="input-produk">
-                        <label className="label">Deskripsi</label> 
-                        <input className="input-field" placeholder="Deskripsi Produk" aria-label="Deskripsi Produk" value={desc} onChange={(e) => setDesc(e.target.value)} />
+                        <label className="label">Deskripsi</label>
+                        <input
+                            className="input-field"
+                            placeholder="Deskripsi Produk"
+                            value={desc}
+                            onChange={(e) => setDesc(e.target.value)}
+                        />
                     </div>
                     <div className="input-produk">
                         <label className="label">Jumlah</label>
-                        <input className="input-field" type="number" placeholder="Kuantitas" aria-label="Kuantitas" value={quantity} onChange={(e) => setQuantity(e.target.value)}/>
+                        <input
+                            className="input-field"
+                            type="number"
+                            placeholder="Jumlah"
+                            value={quantity}
+                            onChange={(e) => setQuantity(e.target.value)}
+                        />
                     </div>
                     <div className="input-produk">
                         <label className="label">Harga Beli</label>
-                        <input className="input-field" type="number" placeholder="Harga Beli" aria-label="Harga Beli" value={purchase} onChange={(e) => setPurchase(e.target.value)}/>
+                        <input
+                            className="input-field"
+                            type="number"
+                            placeholder="Harga Beli"
+                            value={purchase}
+                            onChange={(e) => setPurchase(e.target.value)}
+                        />
                     </div>
                     <div className="input-produk">
                         <label className="label">Harga Jual</label>
-                        <input className="input-field" type="number" placeholder="Harga Jual" aria-label="Harga Jual" value={sell} onChange={(e) => setSell(e.target.value)}/>
+                        <input
+                            className="input-field"
+                            type="number"
+                            placeholder="Harga Jual"
+                            value={sell}
+                            onChange={(e) => setSell(e.target.value)}
+                        />
                     </div>
                     <div className="input-produk">
                         <label className="label">Gambar Produk</label>
@@ -187,25 +227,21 @@ function AddProduk() {
                                 type="file"
                                 accept="image/*"
                                 onChange={handleImageChange}
-                                style={{ display: 'none' }}
+                                style={{display: 'none'}}
                                 ref={fileInputRef}
                             />
-                            <FaPlusCircle className="openFile" onClick={openFileDialog} />
+                            <FaPlusCircle className="openFile" onClick={openFileDialog}/>
                         </div>
                     </div>
-                    <button className="cancelButton" onClick={() => window.history.back()}>
-                        CANCEL
-                    </button>
+                    <button className="cancelButton" onClick={() => navigate(-1)}>CANCEL</button>
                     <button className="saveButton" onClick={handleSave}>SAVE</button>
                 </div>
             </div>
             {showScanner && (
                 <div className="modal-overlay" onClick={() => setShowScanner(false)}>
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                        <button className="close-button" onClick={() => setShowScanner(false)}>
-                            X
-                        </button>
-                        <Scan />
+                        <button className="close-button" onClick={() => setShowScanner(false)}>X</button>
+                        <Scan onScanned={handleScanned} />
                     </div>
                 </div>
             )}

@@ -19,35 +19,35 @@ const Scanner = () => {
       if (webcamRef.current) {
         try {
           await codeReader.decodeFromVideoDevice(
-            undefined,
-            webcamRef.current.video,
-            (result) => {
-              if (result && isScanning.current) {
-                setBarcode(result.text);
-                isScanning.current = false;
-                setIsLoading(true);
-                
-                setTimeout(() => {
-                  setIsLoading(false);
-                  let countdown = 3;
-                  setTime(countdown);
-                  const timer = setInterval(() => {
-                    countdown -= 1;
-                    setTime(countdown);
-                    if (countdown <= 0) {
-                      clearInterval(timer);
-                      setBarcode(null);
-                      setTime(0);
-                      isScanning.current = true;
-                    }
-                  }, 1000);
-                }, 1000);
+              undefined,
+              webcamRef.current.video,
+              (result) => {
+                if (result && isScanning.current) {
+                  setBarcode(result.text);
+                  isScanning.current = false;
+                  setIsLoading(true);
 
-                setTimeout(() => {
-                  navigate('/add_produk', { state: { barcode: result.text } });
-                }, 4000);
+                  setTimeout(() => {
+                    setIsLoading(false);
+                    let countdown = 3;
+                    setTime(countdown);
+                    const timer = setInterval(() => {
+                      countdown -= 1;
+                      setTime(countdown);
+                      if (countdown <= 0) {
+                        clearInterval(timer);
+                        setBarcode(null);
+                        setTime(0);
+                        isScanning.current = true;
+                      }
+                    }, 1000);
+                  }, 1000);
+
+                  setTimeout(() => {
+                    navigate('/add_produk', { state: { barcode: result.text } });
+                  }, 4000);
+                }
               }
-            }
           );
         } catch (err) {
           console.error(err);
@@ -68,26 +68,26 @@ const Scanner = () => {
   }, [barcode, codeReader, navigate]);
 
   return (
-    <div className="scanner-container">
-      <div className="scanner-overlay">
-        <div className="scanner-frame">
-          <Webcam ref={webcamRef} className="webcam" />
-          <div className="scanner-line"></div>
+      <div className="scanner-container">
+        <div className="scanner-overlay">
+          <div className="scanner-frame">
+            <Webcam ref={webcamRef} className="webcam" />
+            <div className="scanner-line"></div>
+          </div>
         </div>
+        {error ? (
+            <p className="scan-text error">Terjadi kesalahan dengan kamera atau scanner.</p>
+        ) : isLoading ? (
+            <p className="scan-text">Loading...</p>
+        ) : barcode ? (
+            <>
+              <p className="scan-text">Barcode: {barcode}</p>
+              {time > 0 && <p className="scan-text">Loading... {time} detik...</p>}
+            </>
+        ) : (
+            <p className="scan-text">Scanning...</p>
+        )}
       </div>
-      {error ? (
-        <p className="scan-text error">Terjadi kesalahan dengan kamera atau scanner.</p>
-      ) : isLoading ? (
-        <p className="scan-text">Loading...</p>
-      ) : barcode ? (
-        <>
-          <p className="scan-text">Barcode: {barcode}</p>
-          {time > 0 && <p className="scan-text">Loading... {time} detik...</p>}
-        </>
-      ) : (
-        <p className="scan-text">Scanning...</p>
-      )}
-    </div>
   );
 };
 
